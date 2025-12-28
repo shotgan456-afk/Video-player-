@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Simple Video Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  margin: 0;
+  background: #0f0f0f;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 12px;
+  background: #1c1c1c;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+video {
+  width: 100%;
+  background: black;
+}
+
+.actions {
+  display: flex;
+  gap: 15px;
+  padding: 10px;
+}
+
+button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+}
+
+.section {
+  padding: 10px;
+}
+
+.comment {
+  border-bottom: 1px solid #333;
+  padding: 6px 0;
+}
+.comment span {
+  color: red;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>My Video App</header>
+
+<video id="video" controls>
+  <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+</video>
+
+<div class="actions">
+  <button onclick="like()">👍 <span id="likes">0</span></button>
+  <button onclick="dislike()">👎 <span id="dislikes">0</span></button>
+  <button onclick="addWatchlist()">⭐ Watchlist</button>
+</div>
+
+<div class="section">
+  <h3>Comments</h3>
+  <input id="commentInput" placeholder="Add a comment" style="width:100%">
+  <button onclick="addComment()">Post</button>
+  <div id="comments"></div>
+</div>
+
+<script>
+let likes = Number(localStorage.getItem("likes")) || 0;
+let dislikes = Number(localStorage.getItem("dislikes")) || 0;
+let comments = JSON.parse(localStorage.getItem("comments")) || [];
+
+document.getElementById("likes").innerText = likes;
+document.getElementById("dislikes").innerText = dislikes;
+
+function like() {
+  likes++;
+  localStorage.setItem("likes", likes);
+  document.getElementById("likes").innerText = likes;
+}
+
+function dislike() {
+  dislikes++;
+  localStorage.setItem("dislikes", dislikes);
+  document.getElementById("dislikes").innerText = dislikes;
+}
+
+function addComment() {
+  const text = commentInput.value;
+  if (!text) return;
+  comments.push(text);
+  localStorage.setItem("comments", JSON.stringify(comments));
+  commentInput.value = "";
+  renderComments();
+}
+
+function renderComments() {
+  const c = document.getElementById("comments");
+  c.innerHTML = "";
+  comments.forEach((t, i) => {
+    c.innerHTML += `<div class="comment">${t} <span onclick="del(${i})">🗑</span></div>`;
+  });
+}
+
+function del(i) {
+  comments.splice(i, 1);
+  localStorage.setItem("comments", JSON.stringify(comments));
+  renderComments();
+}
+
+function addWatchlist() {
+  alert("Added to watchlist (local)");
+}
+
+renderComments();
+</script>
+
+</body>
+</html>
